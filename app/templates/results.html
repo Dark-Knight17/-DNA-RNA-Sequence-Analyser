@@ -1,0 +1,108 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<section class="results-header">
+    <a href="{{ url_for('main.index') }}" class="btn btn-secondary">&larr; Analyze Another</a>
+    <h2>Analysis Results</h2>
+</section>
+
+<div class="results-grid">
+    <!-- 1. Sequence Info & Detection -->
+    <div class="card result-card">
+        <h3>Step 1: Sequence Type Detection</h3>
+        <div class="result-box">
+            <p><strong>Input Sequence:</strong></p>
+            <pre class="sequence-display">{{ results.original_sequence }}</pre>
+            <p><strong>Identified as:</strong> <span class="badge">{{ results.sequence_type }}</span></p>
+        </div>
+        <div class="explanation-box">
+            <h4>How it works</h4>
+            <p>{{ results.detection.general.process }}</p>
+            <h4>Your Sequence</h4>
+            <p>{{ results.detection.explanation }}</p>
+        </div>
+    </div>
+
+    <!-- 2. Transcription -->
+    <div class="card result-card">
+        <h3>Step 2: Transcription</h3>
+        <div class="result-box">
+            <p><strong>mRNA Sequence:</strong></p>
+            <pre class="sequence-display">{{ results.transcription.mrna }}</pre>
+            <p><strong>Strand used:</strong> {{ results.strand_type | capitalize }}</p>
+        </div>
+        <div class="explanation-box">
+            <h4>How it works</h4>
+            <p>{{ results.transcription.general.process }}</p>
+            <h4>Your Sequence</h4>
+            <p>{{ results.transcription.explanation }}</p>
+        </div>
+    </div>
+
+    <!-- 3. Translation -->
+    <div class="card result-card">
+        <h3>Step 3: Translation (Codon Mapping)</h3>
+        <div class="result-box table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Codon</th>
+                        <th>Amino Acid</th>
+                        <th>Abbr.</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in results.translation.codons %}
+                    <tr class="{% if item.abbreviation == 'STOP' %}stop-codon{% elif item.codon == 'AUG' %}start-codon{% endif %}">
+                        <td><code>{{ item.codon }}</code></td>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.abbreviation }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="explanation-box">
+            <h4>How it works</h4>
+            <p>{{ results.translation.general.process }}</p>
+            <h4>Your Sequence</h4>
+            <p>{{ results.translation.explanation }}</p>
+        </div>
+    </div>
+
+    <!-- 4. Protein Analysis -->
+    <div class="card result-card">
+        <h3>Step 4: Protein Characterisation</h3>
+        <div class="result-box">
+            <p><strong>Final Polypeptide Chain:</strong></p>
+            <p class="peptide-display">
+                {% for aa in results.protein.analysis.peptide_chain %}
+                <span class="aa-token" title="{{ aa.name }}">{{ aa.abbreviation }}</span>{% if not loop.last %} — {% endif %}
+                {% endfor %}
+            </p>
+            <p><strong>Protein Sequence:</strong> <code>{{ results.protein.analysis.sequence_1_letter }}</code></p>
+            <p><strong>Length:</strong> {{ results.protein.analysis.length }} amino acids</p>
+            
+            <h4>Composition Overview</h4>
+            <ul>
+                <li>Hydrophilic (Polar): {{ results.protein.analysis.composition.hydrophilic_polar }}</li>
+                <li>Hydrophobic (Non-polar): {{ results.protein.analysis.composition.hydrophobic_nonpolar }}</li>
+            </ul>
+        </div>
+        <div class="explanation-box">
+            <h4>How it works</h4>
+            <p>{{ results.protein.general.process }}</p>
+            <h4>Your Protein</h4>
+            <p>{{ results.protein.explanation }}</p>
+        </div>
+    </div>
+</div>
+
+<section class="api-lookup card">
+    <h3>Step 5: Biological Database Lookup</h3>
+    <p>In the final phase, we will integrate with real-world databases like UniProt to find functional information about this protein sequence.</p>
+    <div id="api-results-placeholder">
+        <p class="status-msg">UniProt API integration coming in Phase 5...</p>
+    </div>
+</section>
+{% endblock %}

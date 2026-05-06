@@ -1,0 +1,55 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<section class="hero">
+    <h2>Welcome to the Sequence Analyser</h2>
+    <p>Upload your DNA or RNA sequence to explore the core molecular processes of life: transcription, translation, and protein synthesis.</p>
+</section>
+
+<section class="input-panel card">
+    <h3>Input Sequence</h3>
+    <form action="{{ url_for('main.analyze') }}" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="sequence">Paste your sequence (A, T, C, G, U):</label>
+            <textarea name="sequence" id="sequence" placeholder="e.g. ATGCGTAAA" rows="6"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Or upload a file (.txt, .fasta):</label>
+            <div id="drop-zone" class="drop-zone">
+                <span class="drop-zone__prompt">Drop file here or click to upload</span>
+                <input type="file" name="file" id="file-input" class="drop-zone__input" accept=".txt,.fasta">
+            </div>
+        </div>
+
+        <div class="form-group" id="strand-selection" style="display: none;">
+            <label>If DNA, specify strand type:</label>
+            <div class="radio-group">
+                <label>
+                    <input type="radio" name="strand_type" value="coding" checked> Coding (Non-template)
+                </label>
+                <label>
+                    <input type="radio" name="strand_type" value="template"> Template
+                </label>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Analyze Sequence</button>
+    </form>
+</section>
+
+<section class="info-grid">
+    <div class="card">
+        <h4>Manual Input</h4>
+        <p>Type or paste your nucleotide sequence directly into the box. We'll handle the whitespace and formatting.</p>
+    </div>
+    <div class="card">
+        <h4>FASTA Support</h4>
+        <p>Full support for the standard FASTA bioinformatics format. Just upload your .fasta file.</p>
+    </div>
+    <div class="card">
+        <h4>Drag & Drop</h4>
+        <p>Easily drag and drop your sequence files anywhere on the upload area for instant processing.</p>
+    </div>
+</section>
+{% endblock %}
