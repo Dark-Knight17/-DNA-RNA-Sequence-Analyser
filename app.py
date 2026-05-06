@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 import os
 from app.routes.main import main_bp
+from database.db_manager import init_db
 
 app = Flask(__name__, 
             template_folder='app/templates',
@@ -12,6 +13,9 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024 # 16MB limit
 
 # Ensure upload directory exists
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+
+# Initialize Database
+init_db()
 
 # Register Blueprints
 app.register_blueprint(main_bp)

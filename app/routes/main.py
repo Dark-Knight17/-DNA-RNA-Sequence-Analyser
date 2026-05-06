@@ -5,7 +5,9 @@ from core.transcription import transcribe
 from core.translation import translate
 from core.protein import analyze_protein
 from core.explanations import get_general_explanations
+from core.database_lookup import search_uniprot
 from app.utils.file_handlers import handle_uploaded_file
+from database.db_manager import save_analysis
 
 main_bp = Blueprint('main', __name__)
 
@@ -54,7 +56,16 @@ def analyze():
         # 6. Protein Characterisation
         protein_analysis, protein_explanation = analyze_protein(codons)
         
-        # 7. Explanations
+        # 7. External Database Lookup
+        uniprot_results = search_uniprot(protein_analysis['sequence_1_letter'])
+        
+        # 8. Save to Database
+        try:
+            save_analysis(sequence, seq_type, strand_type, mrna, protein_analysis['sequence_1_letter'])
+        except Exception as e:
+            print(f"Database Error: {e}") # Log error but don't fail the request
+            
+        # 9. Explanations
         general_explanations = get_general_explanations()
         
         results = {
@@ -79,7 +90,8 @@ def analyze():
                 "analysis": protein_analysis,
                 "explanation": protein_explanation,
                 "general": general_explanations['protein']
-            }
+            },
+            "database": uniprot_results
         }
         
         return render_template('results.html', results=results)

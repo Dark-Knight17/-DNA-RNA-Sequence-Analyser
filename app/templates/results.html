@@ -99,10 +99,24 @@
 </div>
 
 <section class="api-lookup card">
-    <h3>Step 5: Biological Database Lookup</h3>
-    <p>In the final phase, we will integrate with real-world databases like UniProt to find functional information about this protein sequence.</p>
-    <div id="api-results-placeholder">
-        <p class="status-msg">UniProt API integration coming in Phase 5...</p>
+    <h3>Step 5: Biological Database Lookup (UniProt)</h3>
+    <p>We've queried the UniProt database using your protein sequence (<code>{{ results.protein.analysis.sequence_1_letter }}</code>) to find real-world matches.</p>
+    
+    {% if results.database %}
+    <div class="uniprot-results">
+        {% for entry in results.database %}
+        <div class="uniprot-entry">
+            <h4><a href="{{ entry.url }}" target="_blank">{{ entry.name }}</a> <small>({{ entry.accession }})</small></h4>
+            <p><strong>Organism:</strong> {{ entry.organism }}</p>
+            <p><strong>Function:</strong> {{ entry.function }}</p>
+        </div>
+        {% endfor %}
     </div>
+    {% else %}
+    <div class="no-results">
+        <p>No exact or close matches found in UniProt for this specific sequence.</p>
+        <p><em>Note: Very short sequences or non-natural synthetic sequences may not yield results.</em></p>
+    </div>
+    {% endif %}
 </section>
 {% endblock %}

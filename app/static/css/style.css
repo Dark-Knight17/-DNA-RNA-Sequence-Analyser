@@ -229,6 +229,45 @@ th {
     margin: 2px;
 }
 
+.uniprot-results {
+    margin-top: 20px;
+}
+
+.uniprot-entry {
+    border-bottom: 1px solid #eee;
+    padding: 15px 0;
+}
+
+.uniprot-entry:last-child {
+    border-bottom: none;
+}
+
+.uniprot-entry h4 {
+    color: var(--accent-color);
+    margin-bottom: 5px;
+}
+
+.uniprot-entry h4 a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.uniprot-entry h4 a:hover {
+    text-decoration: underline;
+}
+
+.uniprot-entry p {
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+}
+
+.no-results {
+    text-align: center;
+    padding: 20px;
+    color: #777;
+    font-style: italic;
+}
+
 footer {
     text-align: center;
     padding: 40px 0;
